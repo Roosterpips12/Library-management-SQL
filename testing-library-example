@@ -1,0 +1,40 @@
+- Sample test data for Library Management System
+
+-- Insert Members
+INSERT INTO Members (FirstName, LastName, Email, Phone, RegistrationDate, MemberStatus, LastRenewalDate) VALUES
+('Alice', 'Johnson', 'alice.j@email.com', '1234567890', '2024-01-01', 'Active', '2024-01-01'),
+('Bob', 'Smith', 'bob.s@email.com', '2345678901', '2024-01-15', 'Active', '2024-01-15'),
+('Carol', 'Brown', 'carol.b@email.com', '3456789012', '2024-01-20', 'Active', '2024-01-20'),
+('David', 'Wilson', 'david.w@email.com', '4567890123', '2024-01-25', 'Suspended', '2024-01-25');
+
+-- Insert Books
+INSERT INTO Books (ISBN, Title, Author, Publisher, PublicationYear, Category, Location, AvailableCopies, TotalCopies) VALUES
+('9780123456789', 'The Great Adventure', 'John Writer', 'Best Books', 2023, 'Fiction', 'A1', 2, 3),
+('9780234567890', 'Learn Programming', 'Jane Coder', 'Tech Books', 2024, 'Technology', 'B2', 1, 2),
+('9780345678901', 'History of Time', 'Sam Historian', 'Knowledge Press', 2022, 'History', 'C3', 3, 3),
+('9780456789012', 'Poetry Collection', 'Emma Poet', 'Art Books', 2023, 'Poetry', 'D4', 1, 1);
+
+-- Insert Loans
+INSERT INTO Loans (MemberID, BookID, LoanDate, DueDate, ReturnDate, Status) VALUES
+(1, 1, '2024-01-05', '2024-02-05', NULL, 'Active'),
+(2, 2, '2024-01-10', '2024-02-10', NULL, 'Active'),
+(3, 1, '2024-01-15', '2024-02-15', '2024-01-30', 'Returned'),
+(1, 3, '2024-01-20', '2024-02-20', NULL, 'Overdue');
+
+-- Insert Reservations
+INSERT INTO Reservations (MemberID, BookID, ReservationDate, Status) VALUES
+(4, 2, '2024-01-25', 'Pending'),
+(2, 1, '2024-01-26', 'Pending');
+
+-- Insert Fines
+INSERT INTO Fines (LoanID, Amount, FineDate, PaymentStatus) VALUES
+(4, 5.00, '2024-02-21', 'Unpaid');
+
+-- Update available copies based on loans
+UPDATE Books b
+SET AvailableCopies = TotalCopies - (
+    SELECT COUNT(*) 
+    FROM Loans l 
+    WHERE l.BookID = b.BookID 
+    AND l.Status = 'Active'
+);
